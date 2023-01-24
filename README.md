@@ -29,3 +29,10 @@ where
 - --iterations total number of iterations
 - --batch-size the number of gradient steps that should be grouped per update
 - --step-size the fixed step size
+
+
+## Install
+To install run
+```bash
+RUSTFLAGS="-C target-cpu=native" cargo install --path . 
+```
