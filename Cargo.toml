@@ -1,0 +1,30 @@
+[package]
+name = "calib"
+version = "0.1.0"
+edition = "2021"
+authors = ["Hampus Malmberg"]
+description = "A command line tool for calibrating control-bounded converters"
+
+
+[profile.release]
+lto = true
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+clap = {version = "3.2.12", features = ["derive"]}
+# toml = "0.5.8"
+# serde = "1.0"
+# serde_derive = "1.0.140"
+log = "0.4"
+env_logger = "0.9.0"
+human-panic = "1.0.3"
+exitcode = "1.1.2"
+# ctrlc = { version = "3.0", features = ["termination"] }
+rand = "0.8.4"
+ndarray = {version = "0.15.6", features = ["rayon"]}
+ndarray-rand = "0.14.0"
+ndarray-npy = "0.8.1"
+rayon = "1.5.3"
+min-max = "0.1"
+indicatif = "0.17.3"
