@@ -24,9 +24,29 @@ fn main() {
             filter,
             input,
             output,
+            non_symmetric_dac,
+            time_symmetric,
         } => {
             info!("validate was called!");
-            let mut estimator = LMSEstimator::new(&input, &filter);
+            let load_offset = true;
+
+            let mut estimator = match (non_symmetric_dac, time_symmetric) {
+                (true, false) => {
+                    info!("using non-symmetric dac waveform");
+                    LMSEstimator::new_non_symmteric_validate(&input, &filter, load_offset)
+                }
+                (false, false) => {
+                    info!("using symmetric dac waveform");
+                    LMSEstimator::new(&input, &filter, load_offset)
+                }
+                (false, true) => {
+                    info!("using non-time symmetric dac waveform");
+                    LMSEstimator::new_non_time_symmetric_validate(&input, &filter, load_offset)
+                }
+                (true, true) => {
+                    panic!("not implemented")
+                }
+            };
             estimator.validate();
             estimator.save_output(&output);
         }
@@ -37,10 +57,45 @@ fn main() {
             iterations,
             batch_size,
             step_size,
+            decay,
+            non_symmetric_dac,
+            time_symmetric,
         } => {
             info!("calibrate was called! with {} iterations", iterations);
-            let mut estimator = LMSEstimator::new(&input, &filter);
-            estimator.calibrate(iterations, step_size, batch_size);
+            if decay > 1.0 || decay < 0.0 {
+                panic!("decay must be in [0,1)");
+            }
+
+            let load_offset = false;
+
+            let estimator = match (non_symmetric_dac, time_symmetric) {
+                (true, false) => {
+                    info!("using non-symmetric dac waveform");
+                    let mut estimator =
+                        LMSEstimator::new_non_symmetric_calibrate(&input, &filter, load_offset);
+                    estimator.calibrate(iterations, step_size, decay, batch_size, 2);
+                    estimator
+                }
+                (false, false) => {
+                    info!("using symmetric dac waveform");
+                    let mut estimator = LMSEstimator::new(&input, &filter, load_offset);
+                    estimator.calibrate(iterations, step_size, decay, batch_size, 1);
+                    estimator
+                }
+                (false, true) => {
+                    info!("using non-time symmetric dac waveform");
+                    let mut estimator = LMSEstimator::new_non_time_symmetric_calibrate(
+                        &input,
+                        &filter,
+                        load_offset,
+                    );
+                    estimator.calibrate(iterations, step_size, decay, batch_size, 2);
+                    estimator
+                }
+                (true, true) => {
+                    panic!("not implemented")
+                }
+            };
             estimator.save_filter(&filter);
             estimator.save_output(&output);
         }

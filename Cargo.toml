@@ -1,6 +1,6 @@
 [package]
 name = "calib"
-version = "0.1.0"
+version = "0.1.3"
 edition = "2021"
 authors = ["Hampus Malmberg"]
 description = "A command line tool for calibrating control-bounded converters"
@@ -17,7 +17,7 @@ clap = {version = "3.2.12", features = ["derive"]}
 # serde = "1.0"
 # serde_derive = "1.0.140"
 log = "0.4"
-env_logger = "0.9.0"
+env_logger = "0.10.0"
 human-panic = "1.0.3"
 exitcode = "1.1.2"
 # ctrlc = { version = "3.0", features = ["termination"] }

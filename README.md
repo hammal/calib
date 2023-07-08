@@ -1,7 +1,7 @@
 # Calib 
 
 a tool for calibrating control-bounded converters.
-For additional tools related to the inputs and outputs of this tool see (calib_python)[]
+For additional tools related to the inputs and outputs of this tool see [calib_python](../calib_python/README.md)
 
 
 ## Validate
