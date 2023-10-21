@@ -49,6 +49,9 @@ pub enum Commands {
         #[clap(short, long, default_value = "1e-6")]
         step_size: f64,
 
+        #[clap(short, long, default_value ="1")]
+        number_of_references: usize,
+
         /// If not symmetric DAC waveform
         #[clap(short, long)]
         non_symmetric_dac: bool,

@@ -1,6 +1,6 @@
 pub mod cli;
 use indicatif::{ProgressBar, ProgressStyle};
-use ndarray::{s, Array1, Array2, Array3, ArrayView2};
+use ndarray::{s, Array1, Array2, Array3, ArrayView2, Axis};
 use ndarray_npy::{ReadNpyExt, WriteNpyExt};
 use std::{
     fs::File,
@@ -41,7 +41,12 @@ impl LMSFilter {
                 Ok(mut file) => {
                     let mut offset_bytes = [0; 8];
                     file.read_exact(&mut offset_bytes).unwrap();
-                    f64::from_be_bytes(offset_bytes)
+                    let offset = f64::from_be_bytes(offset_bytes);
+                    if offset.is_nan() {
+                        0.0
+                    } else {
+                        offset
+                    }
                 }
                 Err(_) => 0.0,
             },
@@ -139,7 +144,12 @@ impl LMSFilter {
     pub fn u_hat(&self, control_signal: &ArrayView2<f64>) -> f64 {
         // println!("control signal: {:?}", control_signal.shape());
         // println!("h: {:?}", self.h.shape());
-        (&self.h * control_signal).sum() + self.offset
+        let estimate = (&self.h * control_signal).sum() + self.offset;
+        // (&self.h * control_signal).sum_axis(Axis(2)).sum_axis(axis) + self.offset
+        if estimate.is_nan() {
+            panic!("estimate is nan");
+        }
+        estimate
     }
 
     pub fn lms_single_update(

@@ -60,6 +60,7 @@ fn main() {
             decay,
             non_symmetric_dac,
             time_symmetric,
+            number_of_references,
         } => {
             info!("calibrate was called! with {} iterations", iterations);
             if decay > 1.0 || decay < 0.0 {
@@ -73,13 +74,19 @@ fn main() {
                     info!("using non-symmetric dac waveform");
                     let mut estimator =
                         LMSEstimator::new_non_symmetric_calibrate(&input, &filter, load_offset);
-                    estimator.calibrate(iterations, step_size, decay, batch_size, 2);
+                    estimator.calibrate(iterations, step_size, decay, batch_size, 2 * number_of_references);
                     estimator
                 }
                 (false, false) => {
                     info!("using symmetric dac waveform");
                     let mut estimator = LMSEstimator::new(&input, &filter, load_offset);
-                    estimator.calibrate(iterations, step_size, decay, batch_size, 1);
+                    estimator.calibrate(
+                        iterations,
+                        step_size,
+                        decay,
+                        batch_size,
+                        number_of_references,
+                    );
                     estimator
                 }
                 (false, true) => {
@@ -89,7 +96,7 @@ fn main() {
                         &filter,
                         load_offset,
                     );
-                    estimator.calibrate(iterations, step_size, decay, batch_size, 2);
+                    estimator.calibrate(iterations, step_size, decay, batch_size, 2 * number_of_references);
                     estimator
                 }
                 (true, true) => {
