@@ -1,11 +1,10 @@
 pub mod cli;
 use indicatif::{ProgressBar, ProgressStyle};
-use ndarray::{s, Array1, Array2, Array3, ArrayView2, Axis};
+use ndarray::{s, Array1, Array2, Array3, ArrayView2};
 use ndarray_npy::{ReadNpyExt, WriteNpyExt};
 use std::{
     fs::File,
     io::{Read, Write},
-    num,
     path::PathBuf,
 };
 
